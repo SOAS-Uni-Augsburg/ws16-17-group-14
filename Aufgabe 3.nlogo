@@ -15,7 +15,7 @@ to setup-turtles
     create-turtles number
     ask turtles [
       setxy random-xcor random-ycor
-      set energy 40
+      set energy 0
     ]
 end
 
@@ -24,8 +24,8 @@ to go
   eat-grass
   reproduce
   check-death
-  if grow-switch [ grow ]
-  if disease-switch [ disease ]
+  if grow-switch [ grow-tick ]
+  if disease-switch [ disease-tick ]
   tick
 end
 
@@ -51,7 +51,7 @@ end
 
 to reproduce
   ask turtles [
-    if energy > 50 [
+    if energy > birth-energy [
       set energy (energy - birth-energy)
       hatch 1 [ set energy birth-energy ]
     ]
@@ -64,9 +64,21 @@ to check-death
   ]
 end
 
+to disease-tick
+  ask turtles [
+    if energy < disease-energy-threshold-tick [ die ]
+  ]
+end
+
+to grow-tick
+  ask patches [
+    if random 100 < grow-rate-tick [ set pcolor green ]
+  ]
+end
+
 to disease
   ask turtles [
-    if energy < disease-energy [ die ]
+    if energy < disease-energy-threshold [ die ]
   ]
 end
 
@@ -235,15 +247,15 @@ NIL
 HORIZONTAL
 
 SLIDER
-23
-307
-189
-340
-disease-energy
-disease-energy
+680
+480
+895
+513
+disease-energy-threshold
+disease-energy-threshold
 0
 100
-20
+30
 1
 1
 NIL
@@ -267,10 +279,10 @@ NIL
 0
 
 BUTTON
-829
-378
-892
-411
+163
+490
+226
+523
 NIL
 grow
 NIL
@@ -290,15 +302,15 @@ SWITCH
 461
 disease-switch
 disease-switch
-0
+1
 1
 -1000
 
 SWITCH
-691
-377
-814
-410
+25
+489
+148
+522
 grow-switch
 grow-switch
 0
@@ -319,17 +331,47 @@ turtles
 10.0
 true
 false
-"set-plot-x-range 0 (birth-energy + energy-from-grass)\nset-plot-y-range 0 count turtles with-max [energy] + 1\nset-histogram-num-bars (birth-energy + energy-from-grass)" "set-plot-x-range 0 (birth-energy + energy-from-grass)\nset-plot-y-range 0 count turtles with-max [energy] + 1\nset-histogram-num-bars (birth-energy + energy-from-grass)"
+"set-plot-x-range 0 (birth-energy + energy-from-grass)\nset-plot-y-range 0 1\nset-histogram-num-bars (birth-energy + energy-from-grass)" "set-plot-x-range 0 (birth-energy + energy-from-grass)\nset-plot-y-range 0 1\nset-histogram-num-bars (birth-energy + energy-from-grass)"
 PENS
 "energy" 1.0 1 -16777216 true "" "histogram [energy] of turtles"
 
 SLIDER
-24
-356
-189
-389
+25
+391
+191
+424
 grow-rate
 grow-rate
+0
+100
+50
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+680
+523
+895
+556
+disease-energy-threshold-tick
+disease-energy-threshold-tick
+0
+100
+30
+1
+1
+NIL
+HORIZONTAL
+
+SLIDER
+25
+437
+191
+470
+grow-rate-tick
+grow-rate-tick
 0
 100
 3
@@ -337,17 +379,6 @@ grow-rate
 1
 NIL
 HORIZONTAL
-
-MONITOR
-72
-575
-234
-620
-NIL
-turtles with-max [ energy ]
-17
-1
-11
 
 @#$#@#$#@
 ## WHAT IS IT?
