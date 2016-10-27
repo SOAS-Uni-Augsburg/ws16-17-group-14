@@ -72,7 +72,9 @@ end
 
 to grow-tick
   ask patches [
-    if random 100 < grow-rate-tick [ set pcolor green ]
+    if pcolor = black [
+      if random 100 < grow-rate-tick [ set pcolor green ]
+    ]
   ]
 end
 
@@ -84,8 +86,15 @@ end
 
 to grow
   ask patches [
-    if random 100 < grow-rate [ set pcolor green ]
+    if pcolor = black [
+      if random 100 < grow-rate [ set pcolor green ]
+    ]
   ]
+end
+
+to grow&disease
+  grow
+  disease
 end
 @#$#@#$#@
 GRAPHICS-WINDOW
@@ -255,7 +264,7 @@ disease-energy-threshold
 disease-energy-threshold
 0
 100
-30
+40
 1
 1
 NIL
@@ -302,7 +311,7 @@ SWITCH
 461
 disease-switch
 disease-switch
-1
+0
 1
 -1000
 
@@ -374,11 +383,28 @@ grow-rate-tick
 grow-rate-tick
 0
 100
-3
+53
 1
 1
 NIL
 HORIZONTAL
+
+BUTTON
+406
+491
+524
+524
+NIL
+grow&disease\n
+NIL
+1
+T
+OBSERVER
+NIL
+NIL
+NIL
+NIL
+0
 
 @#$#@#$#@
 ## WHAT IS IT?
